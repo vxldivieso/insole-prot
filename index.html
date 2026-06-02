@@ -1,0 +1,2124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Alquimia Insole — Laboratorio Etnobotánico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   RESET & VARIABLES
+═══════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink: #000;
+  --bone: #fff;
+  --gray1: #0d0d0d;
+  --gray2: #1a1a1a;
+  --gray3: #2e2e2e;
+  --gray4: #555;
+  --gray5: #888;
+  --gray6: #bbb;
+  --line: 1px solid rgba(255,255,255,0.1);
+  --line2: 1px solid rgba(255,255,255,0.06);
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --label: 'Cinzel', serif;
+  --radius: 0px;
+  --transition: 0.28s ease;
+  --shadow: 0 8px 40px rgba(0,0,0,0.6);
+}
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--ink);
+  color: var(--bone);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 1rem;
+  line-height: 1.7;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+button { cursor: pointer; font-family: inherit; }
+a { color: inherit; text-decoration: none; }
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-thumb { background: var(--gray3); }
+
+/* ═══════════════════════════════════════
+   TYPOGRAPHY SCALE
+═══════════════════════════════════════ */
+.t-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gray5);
+}
+.t-label-sm {
+  font-family: var(--label);
+  font-size: 0.55rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gray4);
+}
+.t-serif-lg {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--gray6);
+  line-height: 1.65;
+}
+
+/* ═══════════════════════════════════════
+   HEADER / NAV
+═══════════════════════════════════════ */
+header {
+  position: sticky; top: 0; z-index: 300;
+  background: rgba(0,0,0,0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: var(--line2);
+}
+.nav-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 1.25rem;
+  height: 58px;
+}
+.nav-logo {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 1px;
+}
+.nav-logo-name {
+  font-family: var(--label);
+  font-size: 0.88rem;
+  letter-spacing: 0.12em;
+  color: #fff;
+  line-height: 1;
+}
+.nav-logo-sub {
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-size: 0.68rem;
+  color: var(--gray5);
+  line-height: 1;
+}
+.nav-right { display: flex; align-items: center; gap: 0.5rem; }
+.nav-search-btn, .nav-cart-btn {
+  background: transparent;
+  border: none;
+  color: var(--gray6);
+  padding: 0.5rem;
+  display: flex; align-items: center; gap: 0.5rem;
+  transition: color var(--transition);
+  border-radius: 4px;
+}
+.nav-search-btn:hover, .nav-cart-btn:hover { color: #fff; }
+.nav-cart-btn {
+  border: var(--line);
+  padding: 0.45rem 0.85rem;
+  gap: 0.45rem;
+}
+.cart-badge {
+  background: #fff;
+  color: #000;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.62rem;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  transition: transform 0.2s;
+}
+.cart-badge.bump { animation: bump 0.25s ease; }
+@keyframes bump { 0%,100%{transform:scale(1)} 50%{transform:scale(1.35)} }
+
+/* Desktop nav links */
+.nav-links {
+  display: none;
+  list-style: none;
+  gap: 2rem;
+}
+.nav-links li a {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gray5);
+  transition: color var(--transition);
+  font-weight: 500;
+}
+.nav-links li a:hover { color: #fff; }
+
+@media (min-width: 768px) {
+  .nav-links { display: flex; }
+  .nav-inner { padding: 0 2rem; }
+}
+
+/* ═══════════════════════════════════════
+   SEARCH OVERLAY
+═══════════════════════════════════════ */
+.search-overlay {
+  position: fixed; inset: 0; z-index: 400;
+  background: rgba(0,0,0,0.95);
+  display: flex; flex-direction: column; align-items: center;
+  padding-top: 20vh;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.search-overlay.open { opacity: 1; pointer-events: all; }
+.search-overlay input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(1.4rem, 5vw, 2rem);
+  text-align: center;
+  width: 90%; max-width: 520px;
+  padding: 0.75rem 0;
+  outline: none;
+}
+.search-overlay input::placeholder { color: rgba(255,255,255,0.2); }
+.search-close {
+  position: absolute; top: 1.5rem; right: 1.5rem;
+  background: transparent; border: none; color: var(--gray5);
+  font-size: 1.5rem; line-height: 1;
+  transition: color var(--transition);
+}
+.search-close:hover { color: #fff; }
+.search-hint {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gray4);
+  margin-top: 1.5rem;
+}
+
+/* ═══════════════════════════════════════
+   HERO
+═══════════════════════════════════════ */
+.hero {
+  min-height: 75svh;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  position: relative; overflow: hidden;
+  padding: 2rem 0 2.5rem;
+}
+.hero-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background: #000;
+}
+/* Ambient glow */
+.hero-bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(255,255,255,0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 80% 70%, rgba(255,255,255,0.02) 0%, transparent 60%);
+}
+.hero-emblem {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -52%);
+  width: min(380px, 90vw);
+  height: min(380px, 90vw);
+  opacity: 0.55;
+  z-index: 1;
+}
+.hero-emblem svg {
+  width: 100%; height: 100%;
+}
+.emblem-ring-spin {
+  animation: spin 90s linear infinite;
+  transform-origin: 190px 190px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.emblem-pulse { animation: epulse 4s ease-in-out infinite; }
+@keyframes epulse { 0%,100%{opacity:.4} 50%{opacity:1} }
+
+.hero-content {
+  position: relative; z-index: 2;
+  max-width: 1200px; margin: 0 auto; width: 100%;
+  padding: 0 1.25rem;
+}
+.hero-eyebrow {
+  font-family: var(--label);
+  font-size: 0.6rem;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: var(--gray5);
+  margin-bottom: 1.25rem;
+  opacity: 0; animation: fadeUp 0.8s ease forwards 0.2s;
+}
+.hero-h1 {
+  font-family: var(--label);
+  font-size: clamp(2rem, 9vw, 4.5rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: 0.05em;
+  color: #fff;
+  margin-bottom: 1rem;
+  opacity: 0; animation: fadeUp 0.9s ease forwards 0.4s;
+}
+.hero-h1 span {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.78em;
+  font-weight: 400;
+  color: var(--gray6);
+  letter-spacing: 0;
+}
+.hero-sub {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(1.05rem, 3vw, 1.25rem);
+  color: var(--gray5);
+  line-height: 1.85;
+  max-width: 420px;
+  margin-bottom: 2.25rem;
+  opacity: 0; animation: fadeUp 0.9s ease forwards 0.6s;
+}
+.hero-ctas {
+  display: flex; flex-wrap: wrap; gap: 0.75rem;
+  opacity: 0; animation: fadeUp 0.9s ease forwards 0.8s;
+}
+.btn-primary {
+  background: #fff; color: #000;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 600;
+  border: none;
+  padding: 0.9rem 1.75rem;
+  transition: background var(--transition), transform 0.18s;
+  display: inline-flex; align-items: center; gap: 0.5rem;
+}
+.btn-primary:hover { background: #e8e8e8; transform: translateY(-1px); }
+.btn-secondary {
+  background: transparent; color: var(--gray6);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 500;
+  border: var(--line);
+  padding: 0.9rem 1.75rem;
+  transition: border-color var(--transition), color var(--transition), transform 0.18s;
+  display: inline-flex; align-items: center; gap: 0.5rem;
+}
+.btn-secondary:hover { border-color: rgba(255,255,255,0.4); color: #fff; transform: translateY(-1px); }
+
+
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+@media (min-width: 768px) {
+  .hero { min-height: 68vh; padding: 2.5rem 0 3rem; justify-content: center; }
+  .hero-content { padding: 0 2rem; }
+  .hero-emblem {
+    left: auto; right: 0;
+    top: 50%; transform: translateY(-50%);
+    width: min(520px, 50vw);
+    height: min(520px, 50vw);
+    opacity: 0.4;
+  }
+}
+
+
+
+/* ═══════════════════════════════════════
+   CATALOGUE SECTION
+═══════════════════════════════════════ */
+.catalogue {
+  max-width: 1200px; margin: 0 auto;
+  padding: 3rem 1.25rem;
+}
+@media (min-width: 768px) {
+  .catalogue { padding: 4rem 2rem; }
+}
+
+.catalogue-header {
+  margin-bottom: 2rem;
+}
+.catalogue-title {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(1.25rem, 3vw, 1.6rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #fff;
+  margin-bottom: 0.4rem;
+}
+.catalogue-sub {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: var(--gray5);
+}
+
+/* FILTERS */
+.filters {
+  display: flex; flex-wrap: wrap; gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+.filter-pill {
+  background: transparent;
+  border: var(--line);
+  color: var(--gray5);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  font-weight: 500;
+  padding: 0.5rem 1.1rem;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+.filter-pill:hover { border-color: rgba(255,255,255,0.35); color: var(--gray6); }
+.filter-pill.active {
+  background: #fff; color: #000;
+  border-color: #fff;
+}
+
+/* PRODUCT GRID */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: rgba(255,255,255,0.06);
+  border: var(--line2);
+}
+@media (min-width: 600px) {
+  .product-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 1024px) {
+  .product-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+.product-card {
+  background: var(--ink);
+  display: flex; flex-direction: column;
+  transition: background var(--transition);
+  position: relative;
+}
+.product-card:hover { background: var(--gray1); }
+.product-card.hidden { display: none; }
+
+/* Product image area */
+.product-img {
+  aspect-ratio: 3/4;
+  background: var(--gray1);
+  position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.product-img svg {
+  transition: transform 0.5s ease;
+}
+.product-card:hover .product-img svg { transform: scale(1.04); }
+
+/* Quick add button */
+.quick-add {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: rgba(0,0,0,0.88);
+  border: none; border-top: var(--line);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  padding: 0.75rem;
+  opacity: 0; transform: translateY(4px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  backdrop-filter: blur(4px);
+}
+.product-card:hover .quick-add,
+.product-card:focus-within .quick-add {
+  opacity: 1; transform: translateY(0);
+}
+
+/* Badge */
+.product-badge {
+  position: absolute; top: 0.75rem; left: 0.75rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 3px 10px;
+  color: var(--gray5);
+  background: rgba(0,0,0,0.5);
+}
+
+/* Product info */
+.product-info {
+  padding: 1rem;
+  border-top: var(--line2);
+  flex: 1; display: flex; flex-direction: column; gap: 0.2rem;
+}
+.product-collection {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--gray4);
+}
+.product-name {
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.92);
+  line-height: 1.35;
+}
+.product-latin {
+  font-family: 'Inter', sans-serif;
+  font-style: italic;
+  font-size: 0.75rem;
+  color: var(--gray4);
+  margin-bottom: 0.5rem;
+}
+.product-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: auto; padding-top: 0.5rem;
+}
+.product-price {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: rgba(255,255,255,0.85);
+}
+.btn-add-mobile {
+  background: var(--gray2);
+  border: var(--line);
+  color: var(--gray6);
+  font-size: 1.1rem;
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.btn-add-mobile:hover { background: #fff; color: #000; border-color: #fff; }
+
+/* ═══════════════════════════════════════
+   VALORES / TRUST BAR
+═══════════════════════════════════════ */
+.trust-bar {
+  border-top: var(--line2);
+  border-bottom: var(--line2);
+  background: var(--gray1);
+}
+.trust-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border-left: var(--line2);
+}
+@media (min-width: 640px) {
+  .trust-inner { grid-template-columns: repeat(4, 1fr); }
+}
+.trust-item {
+  padding: 1.5rem 1.25rem;
+  border-right: var(--line2);
+  border-bottom: var(--line2);
+  text-align: center;
+}
+@media (min-width: 640px) {
+  .trust-item { border-bottom: none; }
+}
+.trust-icon {
+  font-family: 'Cinzel', serif;
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.2);
+  display: block; margin-bottom: 0.5rem;
+}
+.trust-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--gray6);
+  display: block; margin-bottom: 0.25rem;
+}
+.trust-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  color: var(--gray4);
+}
+
+/* ═══════════════════════════════════════
+   DESPACHO BANNER
+═══════════════════════════════════════ */
+.shipping-banner {
+  max-width: 1200px; margin: 0 auto;
+  padding: 2.5rem 1.25rem;
+  display: flex; flex-direction: column; gap: 1.25rem;
+}
+@media (min-width: 768px) {
+  .shipping-banner {
+    flex-direction: row; align-items: center;
+    justify-content: space-between;
+    padding: 2.5rem 2rem;
+  }
+}
+.shipping-text h3 {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+.shipping-text p {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  color: var(--gray5);
+  line-height: 1.75;
+}
+.starken-badge {
+  display: flex; align-items: center; gap: 1rem;
+  border: var(--line);
+  padding: 1rem 1.5rem;
+  flex-shrink: 0;
+}
+.starken-logo {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #fff;
+}
+.starken-sub {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  color: var(--gray5);
+}
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+footer {
+  border-top: var(--line2);
+  background: var(--gray1);
+}
+.footer-inner {
+  max-width: 1200px; margin: 0 auto;
+  padding: 2.5rem 1.25rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+@media (min-width: 640px) {
+  .footer-inner {
+    grid-template-columns: 1.5fr 1fr 1fr;
+    padding: 3rem 2rem;
+  }
+}
+.footer-brand-name {
+  font-family: var(--label);
+  font-size: 0.92rem;
+  letter-spacing: 0.12em;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+.footer-brand-slogan {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  color: var(--gray5);
+  line-height: 1.75;
+  max-width: 230px;
+}
+.footer-col-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray4);
+  margin-bottom: 1rem;
+}
+.footer-links { list-style: none; }
+.footer-links li {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  color: var(--gray5);
+  padding: 0.22rem 0;
+  cursor: pointer;
+  transition: color var(--transition);
+}
+.footer-links li:hover { color: #fff; }
+.footer-base {
+  max-width: 1200px; margin: 0 auto;
+  padding: 1.25rem 1.25rem;
+  border-top: var(--line2);
+  display: flex; flex-wrap: wrap; gap: 0.75rem;
+  justify-content: space-between; align-items: center;
+}
+@media (min-width: 768px) { .footer-base { padding: 1.25rem 2rem; } }
+.footer-copy {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  color: var(--gray4);
+}
+
+/* ═══════════════════════════════════════
+   CART DRAWER
+═══════════════════════════════════════ */
+.cart-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,0.7);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.cart-overlay.open { opacity: 1; pointer-events: all; }
+
+.cart-drawer {
+  position: fixed; top: 0; right: 0; bottom: 0;
+  width: min(420px, 100vw);
+  background: var(--gray1);
+  border-left: var(--line);
+  z-index: 501;
+  display: flex; flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cart-drawer.open { transform: translateX(0); }
+
+.cart-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: var(--line2);
+  flex-shrink: 0;
+}
+.cart-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+}
+.cart-close {
+  background: transparent; border: none;
+  color: var(--gray5); font-size: 1.3rem; line-height: 1;
+  padding: 0.25rem;
+  transition: color var(--transition);
+}
+.cart-close:hover { color: #fff; }
+
+.cart-items { flex: 1; overflow-y: auto; padding: 1rem 1.5rem; }
+.cart-empty {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; height: 100%;
+  text-align: center; gap: 0.75rem;
+}
+.cart-empty-icon { font-size: 2rem; opacity: 0.15; }
+.cart-empty p {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--gray5);
+}
+
+.cart-item {
+  display: grid; grid-template-columns: 60px 1fr auto;
+  gap: 1rem; align-items: start;
+  padding: 1rem 0;
+  border-bottom: var(--line2);
+  animation: slideIn 0.25s ease;
+}
+@keyframes slideIn {
+  from { opacity:0; transform:translateX(12px); }
+  to   { opacity:1; transform:translateX(0); }
+}
+.cart-item-img {
+  width: 60px; height: 72px;
+  background: var(--gray2);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.cart-item-name {
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.88);
+  line-height: 1.35;
+  margin-bottom: 0.25rem;
+}
+.cart-item-variant {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  color: var(--gray4);
+}
+.cart-item-qty {
+  display: flex; align-items: center; gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+.qty-btn {
+  background: var(--gray2); border: var(--line2);
+  color: var(--gray6); width: 26px; height: 26px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; line-height: 1;
+  transition: all var(--transition);
+}
+.qty-btn:hover { background: var(--gray3); color: #fff; }
+.qty-num {
+  font-family: var(--label);
+  font-size: 0.65rem; letter-spacing: 0.1em;
+  color: #fff; min-width: 20px; text-align: center;
+}
+.cart-item-price {
+  font-family: var(--label);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--gray6);
+  white-space: nowrap;
+}
+.cart-remove {
+  background: transparent; border: none;
+  color: var(--gray4); font-size: 1rem; line-height: 1;
+  padding: 0.2rem; margin-top: -0.2rem;
+  transition: color var(--transition);
+}
+.cart-remove:hover { color: #fff; }
+
+.cart-footer {
+  padding: 1.25rem 1.5rem;
+  border-top: var(--line2);
+  flex-shrink: 0;
+}
+.cart-subtotal {
+  display: flex; justify-content: space-between;
+  align-items: baseline; margin-bottom: 0.5rem;
+}
+.cart-subtotal-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--gray5);
+}
+.cart-subtotal-amount {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: #fff;
+}
+.cart-note {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  color: var(--gray4);
+  margin-bottom: 1.25rem;
+  line-height: 1.6;
+}
+.cart-note span { color: var(--gray6); }
+.btn-checkout {
+  width: 100%;
+  background: #fff; color: #000;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 1rem;
+  transition: background var(--transition), transform 0.18s;
+  display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+}
+.btn-checkout:hover { background: #e8e8e8; transform: translateY(-1px); }
+.btn-checkout:active { transform: translateY(0); }
+
+/* ═══════════════════════════════════════
+   CHECKOUT MODAL (mock)
+═══════════════════════════════════════ */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 600;
+  background: rgba(0,0,0,0.85);
+  display: flex; align-items: center; justify-content: center;
+  padding: 1rem;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+
+.modal {
+  background: var(--gray1);
+  border: var(--line);
+  width: 100%; max-width: 520px;
+  max-height: 92svh;
+  overflow-y: auto;
+  transform: translateY(16px) scale(0.98);
+  transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.modal-overlay.open .modal { transform: translateY(0) scale(1); }
+
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: var(--line2);
+  position: sticky; top: 0;
+  background: var(--gray1);
+  z-index: 1;
+}
+.modal-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+}
+.modal-close {
+  background: transparent; border: none;
+  color: var(--gray5); font-size: 1.3rem; line-height: 1;
+  transition: color var(--transition);
+}
+.modal-close:hover { color: #fff; }
+
+.modal-body { padding: 1.5rem; }
+
+/* Steps indicator */
+.steps {
+  display: flex; gap: 0; margin-bottom: 2rem;
+  border: var(--line2);
+}
+.step {
+  flex: 1; padding: 0.65rem 0.5rem; text-align: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--gray4);
+  border-right: var(--line2);
+  transition: all var(--transition);
+}
+.step:last-child { border-right: none; }
+.step.active { background: rgba(255,255,255,0.05); color: #fff; }
+.step.done { color: var(--gray6); }
+
+/* Form */
+.form-step { display: none; }
+.form-step.active { display: block; }
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+  margin-bottom: 0.85rem;
+}
+@media (min-width: 400px) {
+  .form-row.two-col { grid-template-columns: 1fr 1fr; }
+}
+.form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+.form-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--gray5);
+}
+.form-input {
+  background: var(--gray2);
+  border: var(--line2);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.92rem;
+  padding: 0.8rem 1rem;
+  outline: none;
+  transition: border-color var(--transition);
+  width: 100%;
+}
+.form-input:focus { border-color: rgba(255,255,255,0.35); }
+.form-input::placeholder { color: var(--gray4); font-style: italic; }
+select.form-input { font-style: normal; }
+select.form-input option { background: var(--gray1); }
+
+/* Payment methods */
+.payment-methods {
+  display: flex; flex-direction: column; gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+.payment-method {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0.9rem 1rem;
+  border: var(--line2);
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition);
+}
+.payment-method:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.02); }
+.payment-method.selected { border-color: rgba(255,255,255,0.45); background: rgba(255,255,255,0.04); }
+.payment-method input[type="radio"] { accent-color: #fff; }
+.payment-method-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--gray6);
+}
+.payment-method-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  color: var(--gray4);
+}
+
+/* Order summary in checkout */
+.order-summary {
+  background: var(--gray2);
+  border: var(--line2);
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+.order-summary-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gray5);
+  margin-bottom: 1rem;
+}
+.order-line {
+  display: flex; justify-content: space-between;
+  align-items: baseline;
+  padding: 0.4rem 0;
+  border-bottom: var(--line2);
+}
+.order-line:last-child { border-bottom: none; }
+.order-line-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  color: var(--gray6);
+  flex: 1;
+}
+.order-line-qty {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: var(--gray4);
+  margin: 0 1rem;
+}
+.order-line-price {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gray6);
+  white-space: nowrap;
+}
+
+.order-total {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-top: 0.75rem; padding-top: 0.75rem;
+  border-top: var(--line);
+}
+.order-total-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--gray5);
+}
+.order-total-amount {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: #fff;
+}
+
+/* Shipping in checkout */
+.shipping-info {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0.9rem 1rem;
+  border: var(--line2);
+  margin-bottom: 1.25rem;
+  background: rgba(255,255,255,0.02);
+}
+.shipping-info-text {}
+.shipping-info-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gray4);
+  display: block; margin-bottom: 0.2rem;
+}
+.shipping-info-value {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--gray6);
+}
+
+/* Modal nav buttons */
+.modal-nav {
+  display: flex; gap: 0.75rem; margin-top: 1.5rem;
+}
+.btn-modal-back {
+  background: transparent;
+  border: var(--line);
+  color: var(--gray5);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.85rem 1.25rem;
+  transition: all var(--transition);
+}
+.btn-modal-back:hover { color: #fff; border-color: rgba(255,255,255,0.35); }
+.btn-modal-next {
+  flex: 1;
+  background: #fff; color: #000;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.85rem;
+  transition: background var(--transition), transform 0.18s;
+}
+.btn-modal-next:hover { background: #e8e8e8; transform: translateY(-1px); }
+
+/* Confirmation screen */
+.confirmation {
+  display: none; flex-direction: column; align-items: center;
+  text-align: center; padding: 2rem 1rem; gap: 1.25rem;
+}
+.confirmation.show { display: flex; }
+.confirm-icon {
+  width: 56px; height: 56px;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+}
+.confirm-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+}
+.confirm-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: var(--gray5);
+  line-height: 1.8;
+  max-width: 340px;
+}
+.confirm-order {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gray4);
+  border: var(--line2);
+  padding: 0.5rem 1.25rem;
+}
+
+/* ═══════════════════════════════════════
+   TOAST
+═══════════════════════════════════════ */
+.toast {
+  position: fixed; bottom: 1.5rem; left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  z-index: 700;
+  background: var(--gray2);
+  border: var(--line);
+  padding: 0.85rem 1.5rem;
+  display: flex; align-items: center; gap: 0.75rem;
+  min-width: 220px; max-width: 90vw;
+  opacity: 0;
+  transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+  pointer-events: none;
+  box-shadow: var(--shadow);
+}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+.toast-icon { font-size: 1rem; flex-shrink: 0; }
+.toast-text {}
+.toast-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gray5);
+  display: block; margin-bottom: 2px;
+}
+.toast-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.92);
+}
+
+/* ═══════════════════════════════════════
+   SCROLL REVEAL
+═══════════════════════════════════════ */
+.reveal {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-d1 { transition-delay: 0.1s; }
+.reveal-d2 { transition-delay: 0.2s; }
+.reveal-d3 { transition-delay: 0.3s; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     TOAST
+══════════════════════════════════════ -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✓</span>
+  <div class="toast-text">
+    <span class="toast-title">Añadido al cesto</span>
+    <span class="toast-name" id="toastName"></span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SEARCH OVERLAY
+══════════════════════════════════════ -->
+<div class="search-overlay" id="searchOverlay">
+  <button class="search-close" onclick="toggleSearch()">×</button>
+  <input type="text" id="searchInput" placeholder="Busca una preparación…" oninput="filterSearch(this.value)">
+  <span class="search-hint">Presiona ESC para cerrar</span>
+</div>
+
+<!-- ══════════════════════════════════════
+     CART OVERLAY + DRAWER
+══════════════════════════════════════ -->
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<aside class="cart-drawer" id="cartDrawer">
+  <div class="cart-header">
+    <span class="cart-title">Tu Cesto</span>
+    <button class="cart-close" onclick="toggleCart()">×</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty" id="cartEmpty">
+      <span class="cart-empty-icon">◎</span>
+      <p>Tu cesto está vacío.<br>Agrega una preparación.</p>
+    </div>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-subtotal">
+      <span class="cart-subtotal-label">Subtotal</span>
+      <span class="cart-subtotal-amount" id="cartTotal">$0</span>
+    </div>
+    <p class="cart-note">
+      Despacho a todo Chile vía <span>Starken</span>.<br>
+      Costo de envío calculado al finalizar.
+    </p>
+    <button class="btn-checkout" onclick="openCheckout()">
+      Ir a Pagar →
+    </button>
+  </div>
+</aside>
+
+<!-- ══════════════════════════════════════
+     CHECKOUT MODAL
+══════════════════════════════════════ -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">Finalizar Compra</span>
+      <button class="modal-close" onclick="closeCheckout()">×</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Steps -->
+      <div class="steps" id="stepsBar">
+        <div class="step active" id="step1Ind">Datos</div>
+        <div class="step" id="step2Ind">Despacho</div>
+        <div class="step" id="step3Ind">Pago</div>
+      </div>
+
+      <!-- STEP 1: Datos personales -->
+      <div class="form-step active" id="formStep1">
+        <div class="form-row two-col">
+          <div class="form-group">
+            <label class="form-label">Nombre</label>
+            <input type="text" class="form-input" placeholder="María" id="f-nombre">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Apellido</label>
+            <input type="text" class="form-input" placeholder="González" id="f-apellido">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Correo electrónico</label>
+            <input type="email" class="form-input" placeholder="maria@email.cl" id="f-email">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Teléfono</label>
+            <input type="tel" class="form-input" placeholder="+56 9 1234 5678" id="f-telefono">
+          </div>
+        </div>
+        <div class="modal-nav">
+          <button class="btn-modal-next" onclick="goStep(2)">Continuar → Despacho</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Despacho -->
+      <div class="form-step" id="formStep2">
+        <div class="shipping-info">
+          <div style="font-size:1.6rem;opacity:0.5">📦</div>
+          <div class="shipping-info-text">
+            <span class="shipping-info-label">Operador logístico</span>
+            <span class="shipping-info-value">Starken — Despacho a domicilio</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Región</label>
+            <select class="form-input" id="f-region">
+              <option value="">Selecciona tu región</option>
+              <option>Región Metropolitana</option>
+              <option>Valparaíso</option>
+              <option>O'Higgins</option>
+              <option>Maule</option>
+              <option>Ñuble</option>
+              <option>Biobío</option>
+              <option>Araucanía</option>
+              <option>Los Ríos</option>
+              <option>Los Lagos</option>
+              <option>Magallanes</option>
+              <option>Arica y Parinacota</option>
+              <option>Tarapacá</option>
+              <option>Antofagasta</option>
+              <option>Atacama</option>
+              <option>Coquimbo</option>
+              <option>Aysen</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Ciudad / Comuna</label>
+            <input type="text" class="form-input" placeholder="Santiago" id="f-ciudad">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Dirección</label>
+            <input type="text" class="form-input" placeholder="Av. Providencia 1234" id="f-direccion">
+          </div>
+        </div>
+        <div class="form-row two-col">
+          <div class="form-group">
+            <label class="form-label">Número / Depto</label>
+            <input type="text" class="form-input" placeholder="Depto 5B" id="f-depto">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Código Postal</label>
+            <input type="text" class="form-input" placeholder="7500000" id="f-cp">
+          </div>
+        </div>
+        <div class="modal-nav">
+          <button class="btn-modal-back" onclick="goStep(1)">← Volver</button>
+          <button class="btn-modal-next" onclick="goStep(3)">Continuar → Pago</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Pago -->
+      <div class="form-step" id="formStep3">
+        <div class="order-summary" id="orderSummary"></div>
+
+        <div style="font-family:'Inter',sans-serif;font-size:0.72rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray5);margin-bottom:0.75rem;">
+          Método de pago
+        </div>
+        <div class="payment-methods">
+          <label class="payment-method selected" onclick="selectPayment(this)">
+            <input type="radio" name="payment" value="webpay" checked>
+            <div>
+              <div class="payment-method-name">Webpay Plus</div>
+              <div class="payment-method-desc">Tarjeta de crédito o débito</div>
+            </div>
+          </label>
+          <label class="payment-method" onclick="selectPayment(this)">
+            <input type="radio" name="payment" value="khipu">
+            <div>
+              <div class="payment-method-name">Khipu</div>
+              <div class="payment-method-desc">Transferencia bancaria directa</div>
+            </div>
+          </label>
+          <label class="payment-method" onclick="selectPayment(this)">
+            <input type="radio" name="payment" value="mercadopago">
+            <div>
+              <div class="payment-method-name">Mercado Pago</div>
+              <div class="payment-method-desc">Tarjeta, cuotas o billetera</div>
+            </div>
+          </label>
+        </div>
+
+        <div class="modal-nav">
+          <button class="btn-modal-back" onclick="goStep(2)">← Volver</button>
+          <button class="btn-modal-next" onclick="confirmOrder()">Confirmar Pedido →</button>
+        </div>
+      </div>
+
+      <!-- CONFIRMATION -->
+      <div class="confirmation" id="confirmation">
+        <div class="confirm-icon">✓</div>
+        <div class="confirm-title">Pedido Confirmado</div>
+        <p class="confirm-text">
+          Gracias por tu compra. Recibirás un correo con los detalles y el número de seguimiento de <strong>Starken</strong> dentro de las próximas 24 horas hábiles.
+        </p>
+        <div class="confirm-order" id="confirmOrderNum">Pedido #AI-00000</div>
+        <button class="btn-modal-next" style="margin-top:0.5rem;max-width:280px" onclick="closeCheckout()">
+          Volver a la tienda
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     HEADER
+══════════════════════════════════════ -->
+<header>
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <span class="nav-logo-name">Alquimia Insole</span>
+      <span class="nav-logo-sub">Laboratorio Etnobotánico</span>
+    </div>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#catalogo">Formulario</a></li>
+        <li><a href="#despacho">Despacho</a></li>
+        <li><a href="#nosotros">Nosotros</a></li>
+      </ul>
+    </nav>
+    <div class="nav-right">
+      <button class="nav-search-btn" onclick="toggleSearch()" aria-label="Buscar">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="10.5" y1="10.5" x2="14.5" y2="14.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <button class="nav-cart-btn" onclick="toggleCart()" aria-label="Carrito">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M2 2H3.5L5.5 11H12L14 5H4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="6.5" cy="13.5" r="1" fill="currentColor"/>
+          <circle cx="11.5" cy="13.5" r="1" fill="currentColor"/>
+        </svg>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════
+     HERO
+══════════════════════════════════════ -->
+<section class="hero" id="inicio">
+  <div class="hero-bg"></div>
+
+  <div class="hero-content">
+    <span class="hero-eyebrow">Laboratorio Etnobotánico · Chile · 2024</span>
+    <h1 class="hero-h1">
+      Alquimia<br>
+      <span>de lo natural</span>
+    </h1>
+    <p class="hero-sub">
+      Cosmética de precisión botánica. Ingredientes con nombre, origen y porcentaje publicado. Sin velos.
+    </p>
+    <div class="hero-ctas">
+      <button class="btn-primary" onclick="document.getElementById('catalogo').scrollIntoView({behavior:'smooth'})">
+        Ver Formulario →
+      </button>
+      <button class="btn-secondary" onclick="document.getElementById('nosotros').scrollIntoView({behavior:'smooth'})">
+        El Manifiesto
+      </button>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<!-- ══════════════════════════════════════
+     CATALOGUE
+══════════════════════════════════════ -->
+<section class="catalogue" id="catalogo">
+  <div class="catalogue-header reveal">
+    <h2 class="catalogue-title">Formulario Actual</h2>
+    <p class="catalogue-sub">Preparaciones del laboratorio — temporada 2024</p>
+  </div>
+
+  <div class="filters reveal reveal-d1">
+    <button class="filter-pill active" onclick="applyFilter(this,'todo')">Todo</button>
+    <button class="filter-pill" onclick="applyFilter(this,'facial')">Línea Facial</button>
+    <button class="filter-pill" onclick="applyFilter(this,'capilar')">Capilar</button>
+    <button class="filter-pill" onclick="applyFilter(this,'jabones')">Jabonería</button>
+    <button class="filter-pill" onclick="applyFilter(this,'aceites')">Aceites</button>
+    <button class="filter-pill" onclick="applyFilter(this,'limitado')">Ed. Limitada</button>
+  </div>
+
+  <div class="product-grid reveal reveal-d2" id="productGrid">
+
+    <!-- PRODUCTO 1 -->
+    <div class="product-card" data-cat="facial" data-name="Sérum Oro Verde de Araucaria" data-price="34900">
+      <div class="product-img">
+        <svg width="55" height="118" viewBox="0 0 55 118" fill="none">
+          <rect x="18" y="0" width="18" height="7" rx="2" stroke="rgba(255,255,255,0.4)" stroke-width="0.9"/>
+          <rect x="6" y="7" width="42" height="107" rx="4" stroke="rgba(255,255,255,0.4)" stroke-width="0.9"/>
+          <line x1="6" y1="24" x2="48" y2="24" stroke="rgba(255,255,255,0.15)" stroke-width="0.7"/>
+          <text x="27" y="62" text-anchor="middle" font-family="'Cinzel',serif" font-size="5.5" fill="rgba(255,255,255,0.5)" letter-spacing="1.5">SÉRUM</text>
+          <text x="27" y="75" text-anchor="middle" font-family="'Cormorant Garamond',serif" font-size="5" fill="rgba(255,255,255,0.28)" font-style="italic">30 ml</text>
+        </svg>
+        <div class="product-badge">Nativo</div>
+        <button class="quick-add" onclick="addToCart('Sérum Oro Verde de Araucaria',34900,this)">+ Añadir al cesto</button>
+      </div>
+      <div class="product-info">
+        <span class="product-collection">Sérum Facial</span>
+        <div class="product-name">Oro Verde de Araucaria</div>
+        <div class="product-latin">Araucaria araucana · 30ml</div>
+        <div class="product-footer">
+          <span class="product-price">$34.900</span>
+          <button class="btn-add-mobile" onclick="addToCart('Sérum Oro Verde de Araucaria',34900,this)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTO 2 -->
+    <div class="product-card" data-cat="aceites limitado" data-name="Tintura de Boldo Ancestral" data-price="28500">
+      <div class="product-img">
+        <svg width="60" height="100" viewBox="0 0 60 100" fill="none">
+          <ellipse cx="30" cy="84" rx="25" ry="13" stroke="rgba(255,255,255,0.4)" stroke-width="0.9"/>
+          <path d="M5 84 L7 42 Q30 22 53 42 L55 84" stroke="rgba(255,255,255,0.4)" stroke-width="0.9" fill="none"/>
+          <ellipse cx="30" cy="42" rx="23" ry="9" stroke="rgba(255,255,255,0.2)" stroke-width="0.7"/>
+          <rect x="24" y="32" width="12" height="11" rx="5.5" stroke="rgba(255,255,255,0.4)" stroke-width="0.9"/>
+          <text x="30" y="65" text-anchor="middle" font-family="'Cinzel',serif" font-size="5" fill="rgba(255,255,255,0.5)" letter-spacing="1.2">ACEITE</text>
+          <text x="30" y="77" text-anchor="middle" font-family="'Cormorant Garamond',serif" font-size="4.5" fill="rgba(255,255,255,0.28)" font-style="italic">15 ml</text>
+        </svg>
+        <div class="product-badge">Ed. Limitada</div>
+        <button class="quick-add" onclick="addToCart('Tintura de Boldo Ancestral',28500,this)">+ Añadir al cesto</button>
+      </div>
+      <div class="product-info">
+        <span class="product-collection">Aceite Esencial</span>
+        <div class="product-name">Tintura de Boldo Ancestral</div>
+        <div class="product-latin">Peumus boldus · 15ml</div>
+        <div class="product-footer">
+          <span class="product-price">$28.500</span>
+          <button class="btn-add-mobile" onclick="addToCart('Tintura de Boldo Ancestral',28500,this)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTO 3 -->
+    <div class="product-card" data-cat="jabones" data-name="Pastilla de Matico y Arcilla" data-price="9800">
+      <div class="product-img">
+        <svg width="80" height="56" viewBox="0 0 80 56" fill="none">
+          <rect x="4" y="13" width="72" height="39" rx="7" stroke="rgba(255,255,255,0.4)" stroke-width="0.9"/>
+          <rect x="23" y="4" width="34" height="11" rx="3" stroke="rgba(255,255,255,0.28)" stroke-width="0.7"/>
+          <line x1="4" y1="25" x2="76" y2="25" stroke="rgba(255,255,255,0.12)" stroke-width="0.6"/>
+          <text x="40" y="40" text-anchor="middle" font-family="'Cinzel',serif" font-size="5.5" fill="rgba(255,255,255,0.5)" letter-spacing="1.5">JABÓN</text>
+          <text x="40" y="48" text-anchor="middle" font-family="'Cormorant Garamond',serif" font-size="4.5" fill="rgba(255,255,255,0.28)" font-style="italic">100g</text>
+        </svg>
+        <div class="product-badge">Vegano</div>
+        <button class="quick-add" onclick="addToCart('Pastilla de Matico y Arcilla',9800,this)">+ Añadir al cesto</button>
+      </div>
+      <div class="product-info">
+        <span class="product-collection">Jabón Artesanal</span>
+        <div class="product-name">Pastilla de Matico y Arcilla</div>
+        <div class="product-latin">Buddleja globosa · 100g</div>
+        <div class="product-footer">
+          <span class="product-price">$9.800</span>
+          <button class="btn-add-mobile" onclick="addToCart('Pastilla de Matico y Arcilla',9800,this)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTO 4 -->
+    <div class="product-card" data-cat="capilar" data-name="Elixir de Quillay y Ortiga" data-price="22900">
+      <div class="product-img">
+        <svg width="46" height="122" viewBox="0 0 46 122" fill="none">
+          <rect x="14" y="0" width="17" height="9" rx="3" stroke="rgba(255,255,255,0.4)" stroke-width="0.9"/>
+          <rect x="3" y="9" width="40" height="110" rx="5" stroke="rgba(255,255,255,0.4)" stroke-width="0.9"/>
+          <line x1="3" y1="28" x2="43" y2="28" stroke="rgba(255,255,255,0.12)" stroke-width="0.6"/>
+          <text x="23" y="68" text-anchor="middle" font-family="'Cinzel',serif" font-size="4.8" fill="rgba(255,255,255,0.5)" letter-spacing="1.2">SHAMPOO</text>
+          <text x="23" y="80" text-anchor="middle" font-family="'Cormorant Garamond',serif" font-size="4.5" fill="rgba(255,255,255,0.28)" font-style="italic">300 ml</text>
+        </svg>
+        <div class="product-badge">Nativo</div>
+        <button class="quick-add" onclick="addToCart('Elixir de Quillay y Ortiga',22900,this)">+ Añadir al cesto</button>
+      </div>
+      <div class="product-info">
+        <span class="product-collection">Cuidado Capilar</span>
+        <div class="product-name">Elixir de Quillay y Ortiga</div>
+        <div class="product-latin">Quillaja saponaria · 300ml</div>
+        <div class="product-footer">
+          <span class="product-price">$22.900</span>
+          <button class="btn-add-mobile" onclick="addToCart('Elixir de Quillay y Ortiga',22900,this)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTO 5 -->
+    <div class="product-card" data-cat="facial" data-name="Ungüento de Rosa Mosqueta" data-price="31200">
+      <div class="product-img">
+        <svg width="56" height="84" viewBox="0 0 56 84" fill="none">
+          <rect x="8" y="10" width="40" height="70" rx="4" stroke="rgba(255,255,255,0.4)" stroke-width="0.9"/>
+          <ellipse cx="28" cy="10" rx="20" ry="8" stroke="rgba(255,255,255,0.22)" stroke-width="0.7"/>
+          <rect x="20" y="2" width="16" height="10" rx="3" stroke="rgba(255,255,255,0.35)" stroke-width="0.8"/>
+          <line x1="8" y1="28" x2="48" y2="28" stroke="rgba(255,255,255,0.1)" stroke-width="0.6"/>
+          <text x="28" y="53" text-anchor="middle" font-family="'Cinzel',serif" font-size="5" fill="rgba(255,255,255,0.5)" letter-spacing="1.2">CREMA</text>
+          <text x="28" y="65" text-anchor="middle" font-family="'Cormorant Garamond',serif" font-size="4.5" fill="rgba(255,255,255,0.28)" font-style="italic">50 ml</text>
+        </svg>
+        <button class="quick-add" onclick="addToCart('Ungüento de Rosa Mosqueta',31200,this)">+ Añadir al cesto</button>
+      </div>
+      <div class="product-info">
+        <span class="product-collection">Crema Facial</span>
+        <div class="product-name">Ungüento de Rosa Mosqueta</div>
+        <div class="product-latin">Rosa rubiginosa · 50ml</div>
+        <div class="product-footer">
+          <span class="product-price">$31.200</span>
+          <button class="btn-add-mobile" onclick="addToCart('Ungüento de Rosa Mosqueta',31200,this)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTO 6 -->
+    <div class="product-card" data-cat="facial aceites limitado" data-name="Sérum de Maqui Negro" data-price="42000">
+      <div class="product-img">
+        <svg width="42" height="108" viewBox="0 0 42 108" fill="none">
+          <path d="M21 1 Q27 7 29 15 L33 27 Q38 39 38 52 Q38 84 21 95 Q4 84 4 52 Q4 39 9 27 L13 15 Q15 7 21 1Z" stroke="rgba(255,255,255,0.4)" stroke-width="0.9" fill="none"/>
+          <path d="M21 18 Q26 28 27 39 Q28 52 21 65 Q14 52 15 39 Q16 28 21 18Z" stroke="rgba(255,255,255,0.18)" stroke-width="0.7" fill="none"/>
+          <text x="21" y="46" text-anchor="middle" font-family="'Cinzel',serif" font-size="4.5" fill="rgba(255,255,255,0.5)" letter-spacing="1">MAQUI</text>
+          <text x="21" y="57" text-anchor="middle" font-family="'Cormorant Garamond',serif" font-size="4" fill="rgba(255,255,255,0.28)" font-style="italic">20 ml</text>
+        </svg>
+        <div class="product-badge">Ed. Limitada</div>
+        <button class="quick-add" onclick="addToCart('Sérum de Maqui Negro',42000,this)">+ Añadir al cesto</button>
+      </div>
+      <div class="product-info">
+        <span class="product-collection">Edición Especial</span>
+        <div class="product-name">Sérum de Maqui Negro</div>
+        <div class="product-latin">Aristotelia chilensis · 20ml</div>
+        <div class="product-footer">
+          <span class="product-price">$42.000</span>
+          <button class="btn-add-mobile" onclick="addToCart('Sérum de Maqui Negro',42000,this)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTO 7 -->
+    <div class="product-card" data-cat="capilar" data-name="Mascarilla de Pehuen y Palta" data-price="26400">
+      <div class="product-img">
+        <svg width="66" height="84" viewBox="0 0 66 84" fill="none">
+          <rect x="5" y="20" width="56" height="60" rx="5" stroke="rgba(255,255,255,0.4)" stroke-width="0.9"/>
+          <ellipse cx="33" cy="20" rx="28" ry="11" stroke="rgba(255,255,255,0.22)" stroke-width="0.7"/>
+          <rect x="24" y="8" width="18" height="14" rx="3" stroke="rgba(255,255,255,0.32)" stroke-width="0.8"/>
+          <line x1="5" y1="35" x2="61" y2="35" stroke="rgba(255,255,255,0.1)" stroke-width="0.6"/>
+          <text x="33" y="57" text-anchor="middle" font-family="'Cinzel',serif" font-size="5" fill="rgba(255,255,255,0.5)" letter-spacing="1">MÁSCARA</text>
+          <text x="33" y="68" text-anchor="middle" font-family="'Cormorant Garamond',serif" font-size="4.5" fill="rgba(255,255,255,0.28)" font-style="italic">250 ml</text>
+        </svg>
+        <button class="quick-add" onclick="addToCart('Mascarilla de Pehuen y Palta',26400,this)">+ Añadir al cesto</button>
+      </div>
+      <div class="product-info">
+        <span class="product-collection">Capilar</span>
+        <div class="product-name">Mascarilla de Pehuen y Palta</div>
+        <div class="product-latin">Araucaria araucana · 250ml</div>
+        <div class="product-footer">
+          <span class="product-price">$26.400</span>
+          <button class="btn-add-mobile" onclick="addToCart('Mascarilla de Pehuen y Palta',26400,this)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTO 8 -->
+    <div class="product-card" data-cat="jabones" data-name="Bálsamo Labial de Canelo" data-price="7200">
+      <div class="product-img">
+        <svg width="68" height="52" viewBox="0 0 68 52" fill="none">
+          <path d="M8 42 Q10 28 15 18 Q34 8 53 18 Q58 28 60 42 Q47 50 34 50 Q21 50 8 42Z" stroke="rgba(255,255,255,0.4)" stroke-width="0.9" fill="none"/>
+          <path d="M18 40 Q20 30 23 21 Q34 16 45 21 Q48 30 50 40" stroke="rgba(255,255,255,0.16)" stroke-width="0.6" fill="none"/>
+          <text x="34" y="32" text-anchor="middle" font-family="'Cinzel',serif" font-size="5" fill="rgba(255,255,255,0.5)" letter-spacing="1">BÁLSAMO</text>
+          <text x="34" y="42" text-anchor="middle" font-family="'Cormorant Garamond',serif" font-size="4" fill="rgba(255,255,255,0.28)" font-style="italic">labial · 10g</text>
+        </svg>
+        <div class="product-badge">Vegano</div>
+        <button class="quick-add" onclick="addToCart('Bálsamo Labial de Canelo',7200,this)">+ Añadir al cesto</button>
+      </div>
+      <div class="product-info">
+        <span class="product-collection">Ritual Corporal</span>
+        <div class="product-name">Bálsamo Labial de Canelo</div>
+        <div class="product-latin">Drimys winteri · 10g</div>
+        <div class="product-footer">
+          <span class="product-price">$7.200</span>
+          <button class="btn-add-mobile" onclick="addToCart('Bálsamo Labial de Canelo',7200,this)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTO 9 -->
+    <div class="product-card" data-cat="facial vegano" data-name="Aceite Seco de Jojoba y Lavanda" data-price="18900">
+      <div class="product-img">
+        <svg width="48" height="108" viewBox="0 0 48 108" fill="none">
+          <path d="M24 2 Q30 8 32 16 Q36 28 36 44 Q36 76 24 86 Q12 76 12 44 Q12 28 16 16 Q18 8 24 2Z" stroke="rgba(255,255,255,0.4)" stroke-width="0.9" fill="none"/>
+          <path d="M24 18 Q28 28 29 40 Q30 54 24 66 Q18 54 19 40 Q20 28 24 18Z" stroke="rgba(255,255,255,0.18)" stroke-width="0.7" fill="none"/>
+          <line x1="24" y1="86" x2="24" y2="96" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
+          <ellipse cx="24" cy="98" rx="8" ry="4" stroke="rgba(255,255,255,0.25)" stroke-width="0.7"/>
+          <text x="24" y="46" text-anchor="middle" font-family="'Cinzel',serif" font-size="4.5" fill="rgba(255,255,255,0.5)" letter-spacing="1">ACEITE</text>
+          <text x="24" y="58" text-anchor="middle" font-family="'Cormorant Garamond',serif" font-size="4" fill="rgba(255,255,255,0.28)" font-style="italic">seco · 30ml</text>
+        </svg>
+        <div class="product-badge">Vegano</div>
+        <button class="quick-add" onclick="addToCart('Aceite Seco de Jojoba y Lavanda',18900,this)">+ Añadir al cesto</button>
+      </div>
+      <div class="product-info">
+        <span class="product-collection">Aceite Facial</span>
+        <div class="product-name">Aceite Seco de Jojoba y Lavanda</div>
+        <div class="product-latin">Simmondsia chinensis · 30ml</div>
+        <div class="product-footer">
+          <span class="product-price">$18.900</span>
+          <button class="btn-add-mobile" onclick="addToCart('Aceite Seco de Jojoba y Lavanda',18900,this)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTO 10 -->
+    <div class="product-card" data-cat="capilar vegano nativo" data-name="Acondicionador de Arrayán y Aloe" data-price="19500">
+      <div class="product-img">
+        <svg width="46" height="122" viewBox="0 0 46 122" fill="none">
+          <rect x="14" y="0" width="17" height="9" rx="3" stroke="rgba(255,255,255,0.4)" stroke-width="0.9"/>
+          <rect x="3" y="9" width="40" height="110" rx="5" stroke="rgba(255,255,255,0.4)" stroke-width="0.9"/>
+          <line x1="3" y1="28" x2="43" y2="28" stroke="rgba(255,255,255,0.12)" stroke-width="0.6"/>
+          <rect x="10" y="36" width="26" height="1.5" rx="0.75" fill="rgba(255,255,255,0.1)"/>
+          <rect x="10" y="42" width="20" height="1.5" rx="0.75" fill="rgba(255,255,255,0.08)"/>
+          <text x="23" y="72" text-anchor="middle" font-family="'Cinzel',serif" font-size="4.5" fill="rgba(255,255,255,0.5)" letter-spacing="1">ACOND.</text>
+          <text x="23" y="84" text-anchor="middle" font-family="'Cormorant Garamond',serif" font-size="4.5" fill="rgba(255,255,255,0.28)" font-style="italic">300 ml</text>
+        </svg>
+        <div class="product-badge">Nativo</div>
+        <button class="quick-add" onclick="addToCart('Acondicionador de Arrayán y Aloe',19500,this)">+ Añadir al cesto</button>
+      </div>
+      <div class="product-info">
+        <span class="product-collection">Cuidado Capilar</span>
+        <div class="product-name">Acondicionador de Arrayán y Aloe</div>
+        <div class="product-latin">Luma apiculata · 300ml</div>
+        <div class="product-footer">
+          <span class="product-price">$19.500</span>
+          <button class="btn-add-mobile" onclick="addToCart('Acondicionador de Arrayán y Aloe',19500,this)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTO 11 -->
+    <div class="product-card" data-cat="jabones vegano" data-name="Jabón de Carbón y Menta" data-price="11200">
+      <div class="product-img">
+        <svg width="80" height="56" viewBox="0 0 80 56" fill="none">
+          <rect x="4" y="13" width="72" height="39" rx="7" stroke="rgba(255,255,255,0.4)" stroke-width="0.9"/>
+          <rect x="23" y="4" width="34" height="11" rx="3" stroke="rgba(255,255,255,0.28)" stroke-width="0.7"/>
+          <line x1="4" y1="25" x2="76" y2="25" stroke="rgba(255,255,255,0.12)" stroke-width="0.6"/>
+          <text x="40" y="40" text-anchor="middle" font-family="'Cinzel',serif" font-size="5" fill="rgba(255,255,255,0.5)" letter-spacing="1">CARBÓN</text>
+          <text x="40" y="49" text-anchor="middle" font-family="'Cormorant Garamond',serif" font-size="4.5" fill="rgba(255,255,255,0.28)" font-style="italic">100g</text>
+        </svg>
+        <div class="product-badge">Vegano</div>
+        <button class="quick-add" onclick="addToCart('Jabón de Carbón y Menta',11200,this)">+ Añadir al cesto</button>
+      </div>
+      <div class="product-info">
+        <span class="product-collection">Jabón Artesanal</span>
+        <div class="product-name">Jabón de Carbón y Menta</div>
+        <div class="product-latin">Mentha piperita · 100g</div>
+        <div class="product-footer">
+          <span class="product-price">$11.200</span>
+          <button class="btn-add-mobile" onclick="addToCart('Jabón de Carbón y Menta',11200,this)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTO 12 -->
+    <div class="product-card" data-cat="facial limitado vegano" data-name="Contorno de Ojos de Coihue" data-price="38500">
+      <div class="product-img">
+        <svg width="54" height="54" viewBox="0 0 54 54" fill="none">
+          <rect x="4" y="4" width="46" height="46" rx="6" stroke="rgba(255,255,255,0.4)" stroke-width="0.9"/>
+          <rect x="12" y="12" width="30" height="30" rx="4" stroke="rgba(255,255,255,0.18)" stroke-width="0.6"/>
+          <rect x="20" y="0" width="14" height="6" rx="2" stroke="rgba(255,255,255,0.3)" stroke-width="0.8"/>
+          <text x="27" y="30" text-anchor="middle" font-family="'Cinzel',serif" font-size="4.2" fill="rgba(255,255,255,0.5)" letter-spacing="1">CONTORNO</text>
+          <text x="27" y="40" text-anchor="middle" font-family="'Cormorant Garamond',serif" font-size="4" fill="rgba(255,255,255,0.28)" font-style="italic">ojos · 15ml</text>
+        </svg>
+        <div class="product-badge">Ed. Limitada</div>
+        <button class="quick-add" onclick="addToCart('Contorno de Ojos de Coihue',38500,this)">+ Añadir al cesto</button>
+      </div>
+      <div class="product-info">
+        <span class="product-collection">Línea Facial</span>
+        <div class="product-name">Contorno de Ojos de Coihue</div>
+        <div class="product-latin">Nothofagus dombeyi · 15ml</div>
+        <div class="product-footer">
+          <span class="product-price">$38.500</span>
+          <button class="btn-add-mobile" onclick="addToCart('Contorno de Ojos de Coihue',38500,this)">+</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /product-grid -->
+</section>
+
+<!-- ══════════════════════════════════════
+     TRUST BAR
+══════════════════════════════════════ -->
+<div class="trust-bar" id="nosotros">
+  <div class="trust-inner reveal">
+    <div class="trust-item">
+      <span class="trust-icon">☽</span>
+      <span class="trust-name">Vegano</span>
+      <span class="trust-desc">Sin ingredientes de origen animal</span>
+    </div>
+    <div class="trust-item">
+      <span class="trust-icon">✦</span>
+      <span class="trust-name">Certificado</span>
+      <span class="trust-desc">Auditorías externas por lote</span>
+    </div>
+    <div class="trust-item">
+      <span class="trust-icon">◎</span>
+      <span class="trust-name">Ecológico</span>
+      <span class="trust-desc">Envases reciclados, huella trazada</span>
+    </div>
+    <div class="trust-item">
+      <span class="trust-icon">≡</span>
+      <span class="trust-name">Transparente</span>
+      <span class="trust-desc">INCI completo publicado siempre</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     DESPACHO BANNER
+══════════════════════════════════════ -->
+<section style="border-top:var(--line2);border-bottom:var(--line2)" id="despacho">
+  <div class="shipping-banner reveal">
+    <div class="shipping-text">
+      <h3>Despacho a todo Chile</h3>
+      <p>
+        Enviamos a través de <strong>Starken</strong> con seguimiento en tiempo real.<br>
+        Despacho en 2–5 días hábiles según tu región.<br>
+        <em>Envío gratis en compras sobre $40.000.</em>
+      </p>
+    </div>
+    <div class="starken-badge">
+      <div>
+        <div class="starken-logo">STARKEN</div>
+        <div class="starken-sub">Operador logístico oficial</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     FOOTER
+══════════════════════════════════════ -->
+<footer>
+  <div class="footer-inner reveal">
+    <div>
+      <div class="footer-brand-name">Alquimia Insole</div>
+      <p class="footer-brand-slogan">Laboratorio etnobotánico dedicado a compartir medicina integral, sensible y transparente.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Formulario</div>
+      <ul class="footer-links">
+        <li>Línea Facial</li>
+        <li>Cuidado Capilar</li>
+        <li>Jabonería & Ritual</li>
+        <li>Aceites Esenciales</li>
+        <li>Ediciones Limitadas</li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Información</div>
+      <ul class="footer-links">
+        <li>El Manifiesto</li>
+        <li>Despacho con Starken</li>
+        <li>Política de devoluciones</li>
+        <li>Preguntas frecuentes</li>
+        <li>hola@alquimiainsole.cl</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-base">
+    <span class="footer-copy">© 2024 Alquimia Insole · Todos los derechos reservados</span>
+    <span class="footer-copy">Laboratorio Etnobotánico · Santiago, Chile</span>
+  </div>
+</footer>
+
+<script>
+/* ══════════════════════════════════════
+   CART STATE
+══════════════════════════════════════ */
+let cartItems = [];
+
+function fmt(n) {
+  return '$' + n.toLocaleString('es-CL');
+}
+
+function addToCart(name, price, btn) {
+  const existing = cartItems.find(i => i.name === name);
+  if (existing) {
+    existing.qty++;
+  } else {
+    cartItems.push({ name, price, qty: 1 });
+  }
+  updateCartUI();
+  showToast(name);
+  // Bump animation
+  const badge = document.getElementById('cartBadge');
+  badge.classList.remove('bump');
+  void badge.offsetWidth;
+  badge.classList.add('bump');
+}
+
+function updateCartUI() {
+  const total = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
+  const count = cartItems.reduce((s, i) => s + i.qty, 0);
+  document.getElementById('cartBadge').textContent = count;
+
+  const itemsEl   = document.getElementById('cartItems');
+  const emptyEl   = document.getElementById('cartEmpty');
+  const footerEl  = document.getElementById('cartFooter');
+  const totalEl   = document.getElementById('cartTotal');
+
+  totalEl.textContent = fmt(total);
+
+  if (cartItems.length === 0) {
+    emptyEl.style.display = 'flex';
+    footerEl.style.display = 'none';
+    itemsEl.innerHTML = '';
+    itemsEl.appendChild(emptyEl);
+    return;
+  }
+
+  emptyEl.style.display = 'none';
+  footerEl.style.display = 'block';
+
+  itemsEl.innerHTML = cartItems.map((item, idx) => `
+    <div class="cart-item" id="ci-${idx}">
+      <div class="cart-item-img">
+        <svg width="24" height="36" viewBox="0 0 24 36" fill="none">
+          <rect x="7" y="0" width="9" height="4" rx="1" stroke="rgba(255,255,255,0.3)" stroke-width="0.7"/>
+          <rect x="2" y="4" width="20" height="30" rx="2" stroke="rgba(255,255,255,0.3)" stroke-width="0.7"/>
+        </svg>
+      </div>
+      <div>
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-variant">${fmt(item.price)} · unidad</div>
+        <div class="cart-item-qty">
+          <button class="qty-btn" onclick="changeQty(${idx},-1)">−</button>
+          <span class="qty-num">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${idx},1)">+</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem">
+        <button class="cart-remove" onclick="removeItem(${idx})">×</button>
+        <span class="cart-item-price">${fmt(item.price * item.qty)}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function changeQty(idx, delta) {
+  cartItems[idx].qty += delta;
+  if (cartItems[idx].qty <= 0) cartItems.splice(idx, 1);
+  updateCartUI();
+}
+
+function removeItem(idx) {
+  cartItems.splice(idx, 1);
+  updateCartUI();
+}
+
+/* ══════════════════════════════════════
+   CART DRAWER
+══════════════════════════════════════ */
+function toggleCart() {
+  document.getElementById('cartOverlay').classList.toggle('open');
+  document.getElementById('cartDrawer').classList.toggle('open');
+  document.body.style.overflow =
+    document.getElementById('cartDrawer').classList.contains('open') ? 'hidden' : '';
+}
+
+/* ══════════════════════════════════════
+   CHECKOUT MODAL
+══════════════════════════════════════ */
+let currentStep = 1;
+
+function openCheckout() {
+  if (cartItems.length === 0) return;
+  toggleCart();
+  setTimeout(() => {
+    document.getElementById('modalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    currentStep = 1;
+    showStep(1);
+    document.getElementById('confirmation').classList.remove('show');
+    document.getElementById('stepsBar').style.display = 'flex';
+    document.getElementById('modalTitle').textContent = 'Finalizar Compra';
+    buildOrderSummary();
+  }, 350);
+}
+
+function closeCheckout() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function goStep(n) {
+  // Basic validation step 1
+  if (currentStep === 1 && n === 2) {
+    const nombre = document.getElementById('f-nombre').value.trim();
+    const email  = document.getElementById('f-email').value.trim();
+    if (!nombre || !email) { alert('Por favor completa nombre y correo.'); return; }
+  }
+  if (currentStep === 2 && n === 3) {
+    const region = document.getElementById('f-region').value;
+    const dir    = document.getElementById('f-direccion').value.trim();
+    if (!region || !dir) { alert('Por favor selecciona región e ingresa tu dirección.'); return; }
+  }
+  currentStep = n;
+  showStep(n);
+}
+
+function showStep(n) {
+  [1,2,3].forEach(i => {
+    document.getElementById(`formStep${i}`).classList.toggle('active', i === n);
+    const ind = document.getElementById(`step${i}Ind`);
+    ind.classList.remove('active','done');
+    if (i === n) ind.classList.add('active');
+    else if (i < n) ind.classList.add('done');
+  });
+}
+
+function buildOrderSummary() {
+  const total = cartItems.reduce((s,i) => s + i.price * i.qty, 0);
+  const lines = cartItems.map(i => `
+    <div class="order-line">
+      <span class="order-line-name">${i.name}</span>
+      <span class="order-line-qty">×${i.qty}</span>
+      <span class="order-line-price">${fmt(i.price * i.qty)}</span>
+    </div>
+  `).join('');
+  document.getElementById('orderSummary').innerHTML = `
+    <div class="order-summary-title">Resumen del pedido</div>
+    ${lines}
+    <div class="order-total">
+      <span class="order-total-label">Total</span>
+      <span class="order-total-amount">${fmt(total)}</span>
+    </div>
+  `;
+}
+
+function selectPayment(el) {
+  document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+  el.classList.add('selected');
+  el.querySelector('input').checked = true;
+}
+
+function confirmOrder() {
+  const orderNum = 'AI-' + Math.floor(10000 + Math.random() * 90000);
+  document.getElementById('confirmOrderNum').textContent = `Pedido #${orderNum}`;
+  document.getElementById('stepsBar').style.display = 'none';
+  document.getElementById('modalTitle').textContent = '¡Gracias!';
+  [1,2,3].forEach(i => document.getElementById(`formStep${i}`).classList.remove('active'));
+  document.getElementById('confirmation').classList.add('show');
+  // Reset cart
+  cartItems = [];
+  updateCartUI();
+}
+
+/* ══════════════════════════════════════
+   SEARCH
+══════════════════════════════════════ */
+function toggleSearch() {
+  const overlay = document.getElementById('searchOverlay');
+  overlay.classList.toggle('open');
+  if (overlay.classList.contains('open')) {
+    setTimeout(() => document.getElementById('searchInput').focus(), 300);
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.getElementById('searchInput').value = '';
+    filterSearch('');
+    document.body.style.overflow = '';
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.getElementById('searchOverlay').classList.remove('open');
+    document.getElementById('searchInput').value = '';
+    filterSearch('');
+    document.body.style.overflow = '';
+  }
+});
+
+function filterSearch(q) {
+  const query = q.toLowerCase().trim();
+  applyFilter(null, 'todo');
+  if (!query) return;
+  document.querySelectorAll('.product-card').forEach(card => {
+    const name = card.dataset.name.toLowerCase();
+    const lat  = card.querySelector('.product-latin')?.textContent.toLowerCase() || '';
+    if (!name.includes(query) && !lat.includes(query)) {
+      card.classList.add('hidden');
+    }
+  });
+}
+
+/* ══════════════════════════════════════
+   FILTERS
+══════════════════════════════════════ */
+function applyFilter(el, cat) {
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  if (el) el.classList.add('active');
+
+  document.querySelectorAll('.product-card').forEach(card => {
+    const cats = card.dataset.cat || '';
+    card.classList.toggle('hidden', cat !== 'todo' && !cats.includes(cat));
+  });
+}
+
+/* ══════════════════════════════════════
+   TOAST
+══════════════════════════════════════ */
+let toastTimer;
+function showToast(name) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toastName').textContent = name;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+}
+
+/* ══════════════════════════════════════
+   SCROLL REVEAL
+══════════════════════════════════════ */
+const revealEls = document.querySelectorAll('.reveal');
+const observer  = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+  });
+}, { threshold: 0.08 });
+revealEls.forEach(el => observer.observe(el));
+
+/* Init */
+updateCartUI();
+</script>
+</body>
+</html>
